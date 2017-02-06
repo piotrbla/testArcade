@@ -12,3 +12,10 @@ class TestMyGame(TestCase):
         game.is_stopped = False
         game.on_draw()
         assert game.is_stopped
+
+    def test_stopped(self):
+        from main import MyGame
+        game = MyGame(100, 100, 'Test')
+        game.is_stopped = True
+        game.on_draw()
+        assert game.is_stopped
