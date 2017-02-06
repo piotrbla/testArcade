@@ -1,12 +1,53 @@
-from arcade import open_window, color, draw_text, finish_render, run, start_render
+from arcade import open_window, color, draw_text, finish_render, run, start_render, Window
+import arcade as arcade
+from random import randrange
+
+
+class MyGame(Window):
+
+    def __init__(self, width: float, height: float, title: str = 'Arcade Window', resizable: bool = False):
+        super().__init__(width, height, title, resizable)
+        arcade.set_background_color(color.GRAY)
+        self.score = 0
+        self.all_sprites_list = arcade.SpriteList()
+        self.player_sprite = arcade.Sprite('character_001.png', scale=0.5)
+        self.player_sprite.center_x = 500
+        self.player_sprite.center_y = 500
+        self.all_sprites_list.append(self.player_sprite)
+        self.coin_list  = arcade.SpriteList()
+        for i in range(50):
+            coin = arcade.Sprite("character_115.png", 0.2)
+            coin.center_x = randrange(width)
+            coin.center_y = randrange(height)
+            self.all_sprites_list.append(coin)
+            self.coin_list.append(coin)
+
+    def animate(self, delta_time: float):
+        super().animate(delta_time)
+        self.all_sprites_list.update()
+        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+
+        self.score += len(hit_list)
+        for coin in hit_list:
+            coin.kill()
+
+    def on_draw(self):
+        arcade.start_render()
+        score_display = "Score : %.6f" % self.score
+        draw_text("Hello zażółć gęślą jaźń", 100, 100, color.BROWN, font_size=26)
+        draw_text(score_display, 200, 200, color.BROWN, font_size=26)
+        self.all_sprites_list.draw()
+
+    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+        super().on_mouse_motion(x, y, dx, dy)
+        self.player_sprite.center_x = x
+        self.player_sprite.center_y = y
 
 
 def main():
-    open_window('My game', 800, 600)
-    start_render()
-    draw_text("Hello zażółć gęślą jaźń", 100, 100, color.WHITE, font_size=16)
-    finish_render()
+    MyGame(800, 600, 'My game')
     run()
+
 
 if __name__ == '__main__':
     main()
