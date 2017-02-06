@@ -1,6 +1,7 @@
-from arcade import open_window, color, draw_text, finish_render, run, start_render, Window
-import arcade as arcade
 from random import randrange
+
+import arcade as arcade
+from arcade import color, draw_text, run, Window
 
 
 class MyGame(Window):
@@ -21,6 +22,7 @@ class MyGame(Window):
             coin.center_y = randrange(height)
             self.all_sprites_list.append(coin)
             self.coin_list.append(coin)
+        self.is_stopped = True
 
     def animate(self, delta_time: float):
         super().animate(delta_time)
@@ -33,15 +35,18 @@ class MyGame(Window):
 
     def on_draw(self):
         arcade.start_render()
-        score_display = "Score : %.6f" % self.score
-        draw_text("Hello zażółć gęślą jaźń", 100, 100, color.BROWN, font_size=26)
-        draw_text(score_display, 200, 200, color.BROWN, font_size=26)
+        if self.is_stopped:
+            score_display = "Score : %.6f" % self.score
+            draw_text("Hello zażółć gęślą jaźń", 100, 100, color.BROWN, font_size=26)
+            draw_text(score_display, 200, 200, color.BROWN, font_size=26)
+        self.is_stopped = True
         self.all_sprites_list.draw()
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         super().on_mouse_motion(x, y, dx, dy)
         self.player_sprite.center_x = x
         self.player_sprite.center_y = y
+        self.is_stopped = False
 
 
 def main():
